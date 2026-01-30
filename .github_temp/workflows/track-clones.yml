@@ -1,0 +1,54 @@
+name: Track Clone Statistics
+
+on:
+  schedule:
+    # Run every day at 00:00 UTC (adjust as needed)
+    - cron: '0 0 * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+permissions:
+  contents: write  # Need write permission to commit data back
+
+jobs:
+  track-clones:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for proper commits
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      
+      - name: Fetch clone statistics
+        env:
+          GITHUB_TOKEN: ${{ secrets.CLONE_TRACKER_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+        run: |
+          python github_clone_tracker.py
+      
+      - name: Generate visualizations
+        run: |
+          python visualizer.py
+      
+      - name: Commit and push if changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add clone_data.json graphs/
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "📊 Update clone statistics - $(date +'%Y-%m-%d')"
+            git push
+          fi
