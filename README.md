@@ -12,7 +12,7 @@ This system automatically tracks clone counts and unique cloners across all your
 - 📈 **Historical Tracking**: Keeps clone data indefinitely (beyond GitHub's 14-day window)
 - 📊 **Beautiful Visualizations**: Auto-generated graphs and charts
 - 🔄 **Incremental Updates**: Only fetches new data, preserves history
-- 🎯 **All Repositories**: Tracks all your repos in one place
+- 🎯 **All Repositories**: Tracks all your repos in one place .
 - 📱 **View Anytime**: Just check this repository to see your stats!
 
 ---
